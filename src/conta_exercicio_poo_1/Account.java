@@ -8,39 +8,61 @@ public class Account {
 	private int accountNo;
 	private String agency;
 	private double balance;
-	private String data;
+	private String oppenDate;
 	private static int totalAccounts;
 	
-	public Account(String owner, String agency, double value) {
+	public Account(String owner, int number, String agency, double value) {
 		this.owner = owner;
-		this.accountNo = 123456;
+		this.accountNo = number;
 		this.agency = agency;
 		this.balance = value;
-		this.data = new Date().toString();
 		Account.totalAccounts ++;
 		this.accountId = Account.totalAccounts;
-	}
-	
-	public static int getTotalAccounts() {
-		return Account.totalAccounts;
+		this.oppenDate = new Date().toString();
 	}
 	
 	public int getAcountId() {
 		return this.accountId;
 	}
 	
-	public boolean withdraw(double value) {
-		if(balance >= value && value > 0) {
-			this.balance -= value;
-			return true;
+	public String getOwner() {
+		return this.owner;
+	}
+	
+	public int getAccountNo() {
+		return this.accountNo;
+	}
+	
+	public String getAgency() {
+		return this.agency;
+	}
+	
+	public double getBalance() {
+		return this.balance;
+	}
+	
+	public static int getTotalAccounts() {
+		return Account.totalAccounts;
+	}
+	
+	public void withdraw(double value) throws SaldoInsuficienteException {
+		if(value < 0) {
+			throw new IllegalArgumentException("Voce tentou depositar um valor negativo!");
+		}
+		
+		if(balance < value) {
+			throw new SaldoInsuficienteException(value);
 		}else {
-			return false;
+			this.balance -= value;
 		}
 	}
 	
-	public boolean deposit(double value) {
-		this.balance += value;
-		return true;
+	public void deposit(double value) {
+		if(value < 0) {
+			throw new IllegalArgumentException("Voce tentou depositar um valor negativo!");
+		}else {
+			this.balance += value;
+		}
 	}
 	
 	public double income() {
@@ -54,7 +76,7 @@ public class Account {
 		data[1] = "Id: "+this.accountNo;
 		data[2] = "Agency: "+this.agency;
 		data[3] = "Balance: "+this.balance;
-		data[4] = "Date: "+this.data;
+		data[4] = "Date: "+this.oppenDate;
 		
 		for(int i = 0; i < data.length; i++) {
 			System.out.println(data[i]);
